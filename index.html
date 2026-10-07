@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Roll a Dice - Guess Game</title>
+
+
+    <style>
+
+        /* =========================
+           RESET
+        ========================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* =========================
+           BODY
+        ========================== */
+
+        body {
+
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+
+            overflow: hidden;
+
+
+            /* Attractive gradient */
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #8b5cf6,
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at bottom right,
+                    #06b6d4,
+                    transparent 35%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #111827,
+                    #1e1b4b,
+                    #312e81
+                );
+
+            position: relative;
+        }
+
+
+        /* =========================
+           BACKGROUND DICE
+        ========================== */
+
+        .background-dice {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 0;
+
+            pointer-events: none;
+        }
+
+
+        .bg-dice {
+
+            position: absolute;
+
+            font-size: 70px;
+
+            opacity: 0.15;
+
+            animation:
+                floatingDice 7s ease-in-out infinite;
+        }
+
+
+        .d1 {
+            top: 5%;
+            left: 8%;
+        }
+
+        .d2 {
+            top: 15%;
+            right: 10%;
+            font-size: 100px;
+            animation-delay: 2s;
+        }
+
+        .d3 {
+            bottom: 10%;
+            left: 5%;
+            font-size: 90px;
+            animation-delay: 3s;
+        }
+
+        .d4 {
+            bottom: 15%;
+            right: 8%;
+            font-size: 80px;
+            animation-delay: 1s;
+        }
+
+        .d5 {
+            top: 50%;
+            left: 2%;
+            font-size: 55px;
+            animation-delay: 4s;
+        }
+
+        .d6 {
+            top: 50%;
+            right: 3%;
+            font-size: 60px;
+            animation-delay: 5s;
+        }
+
+
+        @keyframes floatingDice {
+
+            0% {
+                transform:
+                    translateY(0)
+                    rotate(0deg);
+            }
+
+            50% {
+                transform:
+                    translateY(-35px)
+                    rotate(180deg);
+            }
+
+            100% {
+                transform:
+                    translateY(0)
+                    rotate(360deg);
+            }
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================== */
+
+        .container {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: 430px;
+
+            max-width: 100%;
+
+            padding: 35px;
+
+            text-align: center;
+
+            color: white;
+
+
+            background:
+                rgba(255,255,255,0.12);
+
+            backdrop-filter: blur(18px);
+
+            border:
+                2px solid rgba(255,255,255,0.2);
+
+            border-radius: 30px;
+
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,0.55);
+        }
+
+
+        /* =========================
+           TITLE
+        ========================== */
+
+        h1 {
+
+            font-size: 42px;
+
+            margin-bottom: 8px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #facc15,
+                    #fb7185,
+                    #38bdf8
+                );
+
+           /* webkit-background-clip: text;
+
+            webkit-text-fill-color: transparent;*/
+        }
+
+
+        .subtitle {
+
+            color: #dbeafe;
+
+            margin-bottom: 25px;
+
+            font-size: 17px;
+        }
+
+
+        /* =========================
+           GUESS SECTION
+        ========================== */
+
+        .guess-title {
+
+            font-size: 20px;
+
+            margin-bottom: 12px;
+
+            color: #f8fafc;
+        }
+
+
+        .guess-input {
+
+            width: 100%;
+
+            padding: 14px;
+
+            font-size: 20px;
+
+            text-align: center;
+
+            border: none;
+
+            outline: none;
+
+            border-radius: 12px;
+
+            margin-bottom: 20px;
+
+            background: white;
+
+            color: #1e293b;
+        }
+
+
+        .guess-input:focus {
+
+            box-shadow:
+                0 0 15px #38bdf8;
+        }
+
+
+        /* Remove arrows */
+
+        .guess-input::-webkit-inner-spin-button,
+        .guess-input::-webkit-outer-spin-button {
+
+            -webkit-appearance: none;
+
+            margin: 0;
+        }
+
+
+        /* =========================
+           DICE
+        ========================== */
+
+        .dice-area {
+
+            height: 160px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            perspective: 800px;
+        }
+
+
+        #dice {
+
+            width: 115px;
+
+            height: 115px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #d1d5db
+                );
+
+            border:
+                5px solid white;
+
+            border-radius: 22px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: #ef4444;
+
+            font-size: 55px;
+
+            font-weight: bold;
+
+
+            box-shadow:
+
+                inset
+                -10px
+                -10px
+                18px
+                rgba(0,0,0,0.2),
+
+                12px
+                18px
+                25px
+                rgba(0,0,0,0.45);
+
+
+            transform-style: preserve-3d;
+        }
+
+
+        /* =========================
+           DICE ROLL ANIMATION
+        ========================== */
+
+        .rolling {
+
+            animation:
+                rollAnimation
+                0.9s
+                ease-in-out;
+        }
+
+
+        @keyframes rollAnimation {
+
+            0% {
+
+                transform:
+                    rotateX(0deg)
+                    rotateY(0deg)
+                    rotateZ(0deg)
+                    scale(1);
+            }
+
+
+            25% {
+
+                transform:
+                    rotateX(180deg)
+                    rotateY(90deg)
+                    rotateZ(90deg)
+                    scale(1.2);
+            }
+
+
+            50% {
+
+                transform:
+                    rotateX(360deg)
+                    rotateY(180deg)
+                    rotateZ(180deg)
+                    scale(0.9);
+            }
+
+
+            75% {
+
+                transform:
+                    rotateX(540deg)
+                    rotateY(270deg)
+                    rotateZ(270deg)
+                    scale(1.2);
+            }
+
+
+            100% {
+
+                transform:
+                    rotateX(720deg)
+                    rotateY(360deg)
+                    rotateZ(360deg)
+                    scale(1);
+            }
+        }
+
+
+        /* =========================
+           RESULT
+        ========================== */
+
+        #result {
+
+            min-height: 35px;
+
+            font-size: 21px;
+
+            font-weight: bold;
+
+            margin: 15px 0;
+        }
+
+
+        .correct {
+
+            color: #4ade80;
+
+            text-shadow:
+                0 0 12px #22c55e;
+        }
+
+
+        .wrong {
+
+            color: #fb7185;
+
+            text-shadow:
+                0 0 12px #ef4444;
+        }
+
+
+        /* =========================
+           SCORE
+        ========================== */
+
+        .score-box {
+
+            margin: 20px 0;
+
+            padding: 12px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(0,0,0,0.25);
+        }
+
+
+        .score-box p {
+
+            color: #cbd5e1;
+
+            margin-bottom: 5px;
+        }
+
+
+        #score {
+
+            font-size: 35px;
+
+            font-weight: bold;
+
+            color: #facc15;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================== */
+
+        button {
+
+            border: none;
+
+            padding: 14px 28px;
+
+            margin: 6px;
+
+            border-radius: 30px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+
+        .roll-button {
+
+            color: #111827;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #facc15,
+                    #fb923c
+                );
+
+            box-shadow:
+                0 6px 20px
+                rgba(250,204,21,0.4);
+        }
+
+
+        .roll-button:hover {
+
+            transform:
+                scale(1.07)
+                translateY(-3px);
+        }
+
+
+        .reset-button {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ef4444,
+                    #be123c
+                );
+        }
+
+
+        .reset-button:hover {
+
+            transform:
+                scale(1.07)
+                translateY(-3px);
+        }
+
+
+        /* =========================
+           HISTORY
+        ========================== */
+
+        .history {
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(0,0,0,0.22);
+        }
+
+
+        .history h2 {
+
+            font-size: 19px;
+
+            margin-bottom: 10px;
+        }
+
+
+        #historyList {
+
+            max-height: 120px;
+
+            overflow-y: auto;
+        }
+
+
+        .history-item {
+
+            padding: 8px;
+
+            margin: 5px 0;
+
+            border-radius: 8px;
+
+            background:
+                rgba(255,255,255,0.1);
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 500px) {
+
+            body {
+
+                padding: 12px;
+            }
+
+
+            .container {
+
+                padding: 25px 20px;
+            }
+
+
+            h1 {
+
+                font-size: 34px;
+            }
+
+
+            #dice {
+
+                width: 95px;
+
+                height: 95px;
+
+                font-size: 45px;
+            }
+
+
+            .dice-area {
+
+                height: 135px;
+            }
+
+
+            button {
+
+                width: 90%;
+            }
+
+
+            .bg-dice {
+
+                font-size: 45px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         BACKGROUND DICE
+    ========================== -->
+
+    <div class="background-dice">
+
+        <div class="bg-dice d1">🎲</div>
+
+        <div class="bg-dice d2">🎲</div>
+
+        <div class="bg-dice d3">🎲</div>
+
+        <div class="bg-dice d4">🎲</div>
+
+        <div class="bg-dice d5">🎲</div>
+
+        <div class="bg-dice d6">🎲</div>
+
+    </div>
+
+
+    <!-- =========================
+         GAME
+    ========================== -->
+
+    <div class="container">
+
+
+        <h1>🎲 Roll a Dice</h1>
+
+
+        <p class="subtitle">
+            Guess the number and test your luck!
+        </p>
+
+
+        <!-- Guess -->
+
+        <p class="guess-title">
+            🎯 Guess a number between 1 and 6
+        </p>
+
+
+        <input
+            type="number"
+            id="guess"
+            class="guess-input"
+            min="1"
+            max="6"
+            placeholder="Enter 1 - 6"
+        >
+
+
+        <!-- Dice -->
+
+        <div class="dice-area">
+
+            <div id="dice">
+
+                ⚀
+
+            </div>
+
+        </div>
+
+
+        <!-- Result -->
+
+        <p id="result">
+
+            Enter your guess and roll the dice!
+
+        </p>
+
+
+        <!-- Score -->
+
+        <div class="score-box">
+
+            <p>
+                🏆 Correct Answers
+            </p>
+
+            <div id="score">
+                0
+            </div>
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <button
+            class="roll-button"
+            onclick="rollDice()">
+
+            🎲 Roll Dice
+
+        </button>
+
+
+        <button
+            class="reset-button"
+            onclick="resetGame()">
+
+            🔄 Reset
+
+        </button>
+
+
+        <!-- History -->
+
+        <div class="history">
+
+            <h2>
+                📝 Roll History
+            </h2>
+
+
+            <div id="historyList">
+
+                <p>
+                    No rolls yet...
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        /* -------------------------
+           VARIABLES
+        -------------------------- */
+
+        let score = 0;
+
+        let round = 0;
+
+
+        /* -------------------------
+           ROLL DICE
+        -------------------------- */
+
+        function rollDice() {
+
+
+            /* Get user guess */
+
+            let guess =
+                Number(
+                    document.getElementById(
+                        "guess"
+                    ).value
+                );
+
+
+            /* Check input */
+
+            if (
+                guess < 1 ||
+                guess > 6 ||
+                !Number.isInteger(guess)
+            ) {
+
+                document.getElementById(
+                    "result"
+                ).textContent =
+                    "⚠️ Please enter a number from 1 to 6.";
+
+                document.getElementById(
+                    "result"
+                ).className = "wrong";
+
+                return;
+            }
+
+
+            /* Random dice number */
+
+            let randomNumber =
+                Math.floor(
+                    Math.random() * 6
+                ) + 1;
+
+
+            round++;
+
+
+            /* Dice symbols */
+
+            let diceFaces = [
+
+                "⚀",
+                "⚁",
+                "⚂",
+                "⚃",
+                "⚄",
+                "⚅"
+
+            ];
+
+
+            /* Get dice */
+
+            let dice =
+                document.getElementById(
+                    "dice"
+                );
+
+
+            /* Start animation */
+
+            dice.classList.remove(
+                "rolling"
+            );
+
+
+            void dice.offsetWidth;
+
+
+            dice.classList.add(
+                "rolling"
+            );
+
+
+            /* Wait for animation */
+
+            setTimeout(
+                function () {
+
+
+                    /* Display dice */
+
+                    dice.textContent =
+                        diceFaces[
+                            randomNumber - 1
+                        ];
+
+
+                    /* Get result */
+
+                    let result =
+                        document.getElementById(
+                            "result"
+                        );
+
+
+                    /* Check answer */
+
+                    if (
+                        guess ===
+                        randomNumber
+                    ) {
+
+
+                        score++;
+
+
+                        result.textContent =
+                            "✅ CORRECT! You guessed it!";
+
+
+                        result.className =
+                            "correct";
+
+
+                    }
+
+                    else {
+
+
+                        result.textContent =
+                            "❌ WRONG! Dice rolled " +
+                            randomNumber +
+                            ". Your guess was " +
+                            guess +
+                            ".";
+
+
+                        result.className =
+                            "wrong";
+                    }
+
+
+                    /* Update score */
+
+                    document.getElementById(
+                        "score"
+                    ).textContent =
+                        score;
+
+
+                    /* Add history */
+
+                    addHistory(
+                        round,
+                        guess,
+                        randomNumber
+                    );
+
+
+                },
+                900
+            );
+        }
+
+
+        /* -------------------------
+           HISTORY
+        -------------------------- */
+
+        function addHistory(
+            roundNumber,
+            guess,
+            diceNumber
+        ) {
+
+
+            let history =
+                document.getElementById(
+                    "historyList"
+                );
+
+
+            /* Remove default text */
+
+            if (
+                history.children.length === 1 &&
+                history.children[0].textContent ===
+                "No rolls yet..."
+            ) {
+
+                history.innerHTML = "";
+            }
+
+
+            /* Create history item */
+
+            let item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "history-item";
+
+
+            if (
+                guess ===
+                diceNumber
+            ) {
+
+                item.textContent =
+                    "Round " +
+                    roundNumber +
+                    " → Guess: " +
+                    guess +
+                    " | Dice: " +
+                    diceNumber +
+                    " | ✅ Correct";
+
+            }
+
+            else {
+
+                item.textContent =
+                    "Round " +
+                    roundNumber +
+                    " → Guess: " +
+                    guess +
+                    " | Dice: " +
+                    diceNumber +
+                    " | ❌ Wrong";
+            }
+
+
+            /* New result on top */
+
+            history.prepend(item);
+        }
+
+
+        /* -------------------------
+           RESET GAME
+        -------------------------- */
+
+        function resetGame() {
+
+
+            score = 0;
+
+            round = 0;
+
+
+            /* Reset dice */
+
+            document.getElementById(
+                "dice"
+            ).textContent = "⚀";
+
+
+            /* Reset score */
+
+            document.getElementById(
+                "score"
+            ).textContent = "0";
+
+
+            /* Reset input */
+
+            document.getElementById(
+                "guess"
+            ).value = "";
+
+
+            /* Reset message */
+
+            let result =
+                document.getElementById(
+                    "result"
+                );
+
+
+            result.textContent =
+                "Enter your guess and roll the dice!";
+
+
+            result.className = "";
+
+
+            /* Reset history */
+
+            document.getElementById(
+                "historyList"
+            ).innerHTML =
+                "<p>No rolls yet...</p>";
+        }
+
+    </script>
+
+</body>
+
+</html>
